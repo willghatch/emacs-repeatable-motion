@@ -19,10 +19,11 @@
 (make-repeatable-pair 'evil-previous-close-brace 'evil-next-close-brace)
 (make-repeatable-pair 'evil-jump-forward 'evil-jump-backward)
 
-
-(make-repeatable-motion 'evil-find-char 'evil-repeat-find-char 'evil-repeat-find-char-reverse)
-(make-repeatable-motion 'evil-find-char-reverse 'evil-repeat-find-char-reverse 'evil-repeat-find-char)
-(make-repeatable-motion 'evil-search-forward 'evil-search-next 'evil-search-previous)
-(make-repeatable-motion 'evil-search-backward 'evil-search-previous 'evil-search-next)
-(make-repeatable-motion 'evil-search-word-forward 'evil-search-next 'evil-search-previous)
-(make-repeatable-motion 'evil-search-word-backward 'evil-search-previous 'evil-search-next)
+;; these don't actually work with numeric arguments...
+;; I should probably use evil-define-motion to integrate with evil, which is in evil-commands.el
+(fset 'repeatable-evil-find-char (make-repeatable-motion 'evil-find-char 'evil-repeat-find-char 'evil-repeat-find-char-reverse))
+(fset 'repeatable-evil-find-char-reverse (make-repeatable-motion 'evil-find-char-reverse 'evil-repeat-find-char-reverse 'evil-repeat-find-char))
+(fset 'repeatable-evil-search-forward (make-repeatable-motion 'evil-search-forward 'evil-search-next 'evil-search-previous))
+(fset 'repeatable-evil-search-backward (make-repeatable-motion 'evil-search-backward 'evil-search-previous 'evil-search-next))
+(fset 'repeatable-evil-search-word-forward (make-repeatable-motion 'evil-search-word-forward 'evil-search-next 'evil-search-previous))
+(fset 'repeatable-evil-search-word-backward (make-repeatable-motion 'evil-search-word-backward 'evil-search-previous 'evil-search-next))

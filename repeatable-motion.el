@@ -4,13 +4,16 @@
 ;; local, so for now these won't be either.
 (setq repeatable-motion-forward-func (lambda () nil))
 (setq repeatable-motion-backward-func (lambda () nil))
+(setq repeatable-motion-numeric-arg 1)
 
-(defun repeat-motion-forward ()
-  (interactive)
-  (funcall repeatable-motion-forward-func))
-(defun repeat-motion-backward ()
-  (interactive)
-  (funcall repeatable-motion-backward-func))
+(defun repeat-motion-forward (&optional prefix)
+  (interactive "p")
+  (funcall repeatable-motion-forward-func
+           (if (eq prefix 1) repeatable-motion-numeric-arg prefix )))
+(defun repeat-motion-backward (&optional prefix)
+  (interactive "p")
+  (funcall repeatable-motion-backward-func
+           (if (eq prefix 1) repeatable-motion-numeric-arg prefix )))
 
 (defun make-repeatable-motion (motion-func repeat-func reverse-repeat-func)
   (let ((fwd (cond
@@ -21,11 +24,12 @@
                ((functionp reverse-repeat-func) reverse-repeat-func)
                ((symbolp reverse-repeat-func) (symbol-function reverse-repeat-func))
                (t symbol-function 'ignore))))
-    (lambda ()
-      (interactive)
+    (lambda (&optional prefix)
+      (interactive "p")
       (setq repeatable-motion-forward-func fwd)
       (setq repeatable-motion-backward-func bkwd)
-      (funcall motion-func))))
+      (setq repeatable-motion-numeric-arg prefix)
+      (funcall motion-func prefix))))
 
 (defun make-repeatable-pair (forward-sym backward-sym)
   (let* ((fname (intern (concat "repeatable-" (symbol-name forward-sym))))
