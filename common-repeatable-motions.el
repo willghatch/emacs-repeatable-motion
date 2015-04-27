@@ -16,7 +16,7 @@
 
 (defun -repeatable-def-pair-maybe (fwd bkwd)
   (when (symbol-function fwd)
-    (make-repeatable-pair fwd bkwd)))
+    (define-repeatable-pair fwd bkwd)))
 
 (defun -repeatable-def-single-maybe (motion-sym f-sym b-sym)
   (when (symbol-function motion-sym)

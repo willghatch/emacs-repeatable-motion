@@ -63,7 +63,7 @@ repeat and reverse-repeat functions.  repeat-func may be nil to use the motion f
       (setq current-prefix-arg (list prefix))
       (call-interactively motion-func))))
 
-(defun make-repeatable-pair (forward-sym backward-sym)
+(defun define-repeatable-pair (forward-sym backward-sym)
   "Define a pair of repeatable functions that are opposites of each other.  They
 will be named repeatable-<original-name>"
   (let* ((fname (intern (concat "repeatable-" (symbol-name forward-sym))))
