@@ -1,4 +1,24 @@
-;; -*- lexical-binding: t -*-
+;;; -*- lexical-binding: t -*-
+;;; repeatable-motion.el
+
+;;; Author: William Hatch <willghatch@gmail.com>
+;;; Maintainer: William Hatch <willghatch@gmail.com>
+;;; Version: 0.0
+;;; Homepage: github.com/willghatch/repeatable-motion.el
+
+;;; This is free software: you can redistribute it and/or modify
+;;; it under the terms of the GNU General Public License as published by
+;;; the Free Software Foundation, either version 3 of the License, or
+;;; (at your option) any later version.
+;;;
+;;; This is distributed in the hope that it will be useful,
+;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;; GNU General Public License for more details.
+;;; <http://www.gnu.org/licenses/>
+
+
+;;; Code:
 
 ;; should these be buffer local?  Evil mode doesn't make command repetition buffer
 ;; local, so for now these won't be either.
@@ -51,4 +71,7 @@ will be named repeatable-<original-name>"
     (fset fname (make-repeatable-motion forward-sym forward-sym backward-sym))
     (fset bname (make-repeatable-motion backward-sym backward-sym forward-sym))))
 
+;; provide some motions
+(require 'common-repeatable-motions)
 
+;;; repeatable-motion.el ends here
