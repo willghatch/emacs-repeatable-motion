@@ -8,12 +8,16 @@
 
 (defun repeat-motion-forward (&optional prefix)
   (interactive "p")
-  (funcall repeatable-motion-forward-func
-           (if (eq prefix 1) repeatable-motion-numeric-arg prefix )))
+  (setq current-prefix-arg (if (equal prefix 1)
+                               repeatable-motion-numeric-arg
+                             prefix))
+  (call-interactively repeatable-motion-forward-func))
 (defun repeat-motion-backward (&optional prefix)
   (interactive "p")
-  (funcall repeatable-motion-backward-func
-           (if (eq prefix 1) repeatable-motion-numeric-arg prefix )))
+  (setq current-prefix-arg (if (equal prefix 1)
+                               repeatable-motion-numeric-arg
+                             prefix))
+  (call-interactively repeatable-motion-backward-func))
 
 (defun make-repeatable-motion (motion-func repeat-func reverse-repeat-func)
   (let ((fwd (cond
@@ -29,7 +33,8 @@
       (setq repeatable-motion-forward-func fwd)
       (setq repeatable-motion-backward-func bkwd)
       (setq repeatable-motion-numeric-arg prefix)
-      (funcall motion-func prefix))))
+      (setq current-prefix-arg (list prefix))
+      (call-interactively motion-func))))
 
 (defun make-repeatable-pair (forward-sym backward-sym)
   (let* ((fname (intern (concat "repeatable-" (symbol-name forward-sym))))
