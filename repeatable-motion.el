@@ -73,5 +73,6 @@ will be named repeatable-<original-name>"
 
 ;; provide some motions
 (require 'common-repeatable-motions)
+(provide 'repeatable-motion)
 
 ;;; repeatable-motion.el ends here
