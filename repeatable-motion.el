@@ -22,11 +22,11 @@
 
 ;; should these be buffer local?  Evil mode doesn't make command repetition buffer
 ;; local, so for now these won't be either.
-(setq -repeatable-motion-forward-func (lambda () (interactive) nil))
-(setq -repeatable-motion-backward-func (lambda () (interactive) nil))
-(setq -repeatable-motion-numeric-arg 1)
+(setq repeatable-motion/-forward-func (lambda () (interactive) nil))
+(setq repeatable-motion/-backward-func (lambda () (interactive) nil))
+(setq repeatable-motion/-numeric-arg 1)
 
-(defun -repeatable-motion/evil-p ()
+(defun repeatable-motion/-evil-p ()
   "Is evil available?"
   ;; this may not be the best way to go about it, but this is the main
   ;; function I actually use from evil, so...
@@ -37,19 +37,19 @@
 new one is given"
   (interactive "p")
   (setq current-prefix-arg (if (equal prefix 1)
-                               -repeatable-motion-numeric-arg
+                               repeatable-motion/-numeric-arg
                              prefix))
-  (call-interactively -repeatable-motion-forward-func))
+  (call-interactively repeatable-motion/-forward-func))
 (defun repeatable-motion/backward (&optional prefix)
   "Repeat the last repeatable motion used, using the original prefix unless a
 new one is given"
   (interactive "p")
   (setq current-prefix-arg (if (equal prefix 1)
-                               -repeatable-motion-numeric-arg
+                               repeatable-motion/-numeric-arg
                              prefix))
-  (call-interactively -repeatable-motion-backward-func))
+  (call-interactively repeatable-motion/-backward-func))
 
-(when (-repeatable-motion/evil-p)
+(when (repeatable-motion/-evil-p)
   (evil-declare-motion 'repeatable-motion/forward)
   (evil-declare-motion 'repeatable-motion/backward))
 
@@ -71,16 +71,16 @@ for evil."
     (fset name
           (lambda (&optional prefix)
             (interactive "p")
-            (setq -repeatable-motion-forward-func repeat-fwd)
-            (setq -repeatable-motion-backward-func repeat-motion-reverse)
-            (setq -repeatable-motion-numeric-arg prefix)
+            (setq repeatable-motion/-forward-func repeat-fwd)
+            (setq repeatable-motion/-backward-func repeat-motion-reverse)
+            (setq repeatable-motion/-numeric-arg prefix)
             (setq current-prefix-arg (list prefix))
-            (when (-repeatable-motion/evil-p)
+            (when (repeatable-motion/-evil-p)
               (if evil-inclusive
                   (evil-set-command-property 'repeatable-motion/forward :type 'inclusive)
                 (evil-set-command-property 'repeatable-motion/backward :type 'exclusive)))
             (call-interactively base-motion)))
-    (when (-repeatable-motion/evil-p)
+    (when (repeatable-motion/-evil-p)
       (evil-declare-motion name)
       (when evil-inclusive
         (evil-add-command-properties name :type 'inclusive)))))
