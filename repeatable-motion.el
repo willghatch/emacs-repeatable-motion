@@ -22,54 +22,66 @@
 
 ;; should these be buffer local?  Evil mode doesn't make command repetition buffer
 ;; local, so for now these won't be either.
-(setq repeatable-motion-forward-func (lambda () nil))
-(setq repeatable-motion-backward-func (lambda () nil))
-(setq repeatable-motion-numeric-arg 1)
+(setq -repeatable-motion-forward-func (lambda () (interactive) nil))
+(setq -repeatable-motion-backward-func (lambda () (interactive) nil))
+(setq -repeatable-motion-numeric-arg 1)
 
-(defun repeat-motion-forward (&optional prefix)
+(defun -repeatable-motion/evil-p ()
+  "Is evil available?"
+  ;; this may not be the best way to go about it, but this is the main
+  ;; function I actually use from evil, so...
+  (symbol-function 'evil-declare-motion))
+
+(defun repeatable-motion/forward (&optional prefix)
   "Repeat the last repeatable motion used, using the original prefix unless a
 new one is given"
   (interactive "p")
   (setq current-prefix-arg (if (equal prefix 1)
-                               repeatable-motion-numeric-arg
+                               -repeatable-motion-numeric-arg
                              prefix))
-  (call-interactively repeatable-motion-forward-func))
-(defun repeat-motion-backward (&optional prefix)
+  (call-interactively -repeatable-motion-forward-func))
+(defun repeatable-motion/backward (&optional prefix)
   "Repeat the last repeatable motion used, using the original prefix unless a
 new one is given"
   (interactive "p")
   (setq current-prefix-arg (if (equal prefix 1)
-                               repeatable-motion-numeric-arg
+                               -repeatable-motion-numeric-arg
                              prefix))
-  (call-interactively repeatable-motion-backward-func))
+  (call-interactively -repeatable-motion-backward-func))
 
-(defun make-repeatable-motion (motion-func repeat-func reverse-repeat-func)
-  "Returns a new repeatable version of a given function, which will repeat using the given
-repeat and reverse-repeat functions.  repeat-func may be nil to use the motion func given."
-  (let ((fwd (cond
-              ((functionp repeat-func) repeat-func)
-              ((symbolp repeat-func) (symbol-function repeat-func))
-              ((null repeat-func) motion-func)
-              (t symbol-function 'ignore)))
-        (bkwd (cond
-               ((functionp reverse-repeat-func) reverse-repeat-func)
-               ((symbolp reverse-repeat-func) (symbol-function reverse-repeat-func))
-               (t symbol-function 'ignore))))
-    (lambda (&optional prefix)
-      (interactive "p")
-      (setq repeatable-motion-forward-func fwd)
-      (setq repeatable-motion-backward-func bkwd)
-      (setq repeatable-motion-numeric-arg prefix)
-      (setq current-prefix-arg (list prefix))
-      (call-interactively motion-func))))
+(when (-repeatable-motion/evil-p)
+  (evil-declare-motion 'repeatable-motion/forward)
+  (evil-declare-motion 'repeatable-motion/backward))
 
-(defun define-repeatable-pair (forward-sym backward-sym)
+(defun -repeatable-motion/make-symbol-name (orig-sym)
+  (intern (concat "repeatable-motion/" (symbol-name orig-sym))))
+
+(defun repeatable-motion/define (base-motion repeat-motion-reverse &optional repeat-motion name-prefix)
+  "Defines a new repeatable version of a given function, named
+'repeatable-motion/<original-name>', which will repeat using the given
+repeat and reverse-repeat functions.  If repeat-motion is given, it
+will be used for repeating instead of the base motion given.  If
+name-prefix is given, it will be used instead of 'repeatable-motion/'
+in the new name."
+  (let ((name (-repeatable-motion/make-symbol-name base-motion))
+        (repeat-fwd (if repeat-motion repeat-motion base-motion)))
+    (fset name
+          (lambda (&optional prefix)
+            (interactive "p")
+            (setq -repeatable-motion-forward-func repeat-fwd)
+            (setq -repeatable-motion-backward-func repeat-motion-reverse)
+            (setq -repeatable-motion-numeric-arg prefix)
+            (setq current-prefix-arg (list prefix))
+            (call-interactively base-motion)))
+    (when (-repeatable-motion/evil-p)
+      (evil-declare-motion name))))
+      
+
+(defun repeatable-motion/define-pair (forward-sym backward-sym)
   "Define a pair of repeatable functions that are opposites of each other.  They
-will be named repeatable-<original-name>"
-  (let* ((fname (intern (concat "repeatable-" (symbol-name forward-sym))))
-         (bname (intern (concat "repeatable-" (symbol-name backward-sym)))))
-    (fset fname (make-repeatable-motion forward-sym forward-sym backward-sym))
-    (fset bname (make-repeatable-motion backward-sym backward-sym forward-sym))))
+will be named repeatable-motion/<original-name>"
+  (repeatable-motion/define forward-sym backward-sym)
+  (repeatable-motion/define backward-sym forward-sym))
 
 ;; provide some motions
 (require 'common-repeatable-motions)
