@@ -18,9 +18,9 @@
   (when (symbol-function fwd)
     (repeatable-motion/define-pair fwd bkwd)))
 
-(defun -repeatable-def-single-maybe (motion-sym b-sym &optional f-sym)
+(defun -repeatable-def-single-maybe (motion-sym b-sym &optional f-sym evil-inclusive)
   (when (symbol-function motion-sym)
-    (repeatable-motion/define motion-sym b-sym f-sym)))
+    (repeatable-motion/define motion-sym b-sym f-sym evil-inclusive)))
 
 (-repeatable-def-pair-maybe 'evil-next-line 'evil-previous-line)
 (-repeatable-def-pair-maybe 'evil-next-visual-line 'evil-previous-visual-line)
@@ -44,10 +44,10 @@
 (-repeatable-def-pair-maybe 'evil-jump-forward 'evil-jump-backward)
 (-repeatable-def-pair-maybe 'evil-forward-arg 'evil-backward-arg)
 
-(-repeatable-def-single-maybe 'evil-find-char 'evil-repeat-find-char-reverse 'evil-repeat-find-char)
-(-repeatable-def-single-maybe 'evil-find-char-backward 'evil-repeat-find-char-reverse 'evil-repeat-find-char)
-(-repeatable-def-single-maybe 'evil-find-char-to 'evil-repeat-find-char-reverse 'evil-repeat-find-char)
-(-repeatable-def-single-maybe 'evil-find-char-to-backward 'evil-repeat-find-char-reverse 'evil-repeat-find-char)
+(-repeatable-def-single-maybe 'evil-find-char 'evil-repeat-find-char-reverse 'evil-repeat-find-char t)
+(-repeatable-def-single-maybe 'evil-find-char-backward 'evil-repeat-find-char-reverse 'evil-repeat-find-char t)
+(-repeatable-def-single-maybe 'evil-find-char-to 'evil-repeat-find-char-reverse 'evil-repeat-find-char t)
+(-repeatable-def-single-maybe 'evil-find-char-to-backward 'evil-repeat-find-char-reverse 'evil-repeat-find-char t)
 (-repeatable-def-single-maybe 'evil-search-forward 'evil-search-previous 'evil-search-next)
 (-repeatable-def-single-maybe 'evil-search-backward 'evil-search-previous 'evil-search-next)
 (-repeatable-def-single-maybe 'evil-search-word-forward 'evil-search-previous 'evil-search-next)

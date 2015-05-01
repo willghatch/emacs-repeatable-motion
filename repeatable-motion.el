@@ -56,13 +56,16 @@ new one is given"
 (defun -repeatable-motion/make-symbol-name (orig-sym)
   (intern (concat "repeatable-motion/" (symbol-name orig-sym))))
 
-(defun repeatable-motion/define (base-motion repeat-motion-reverse &optional repeat-motion name-prefix)
+(defun repeatable-motion/define (base-motion repeat-motion-reverse &optional repeat-motion evil-inclusive name-prefix)
   "Defines a new repeatable version of a given function, named
 'repeatable-motion/<original-name>', which will repeat using the given
 repeat and reverse-repeat functions.  If repeat-motion is given, it
 will be used for repeating instead of the base motion given.  If
 name-prefix is given, it will be used instead of 'repeatable-motion/'
-in the new name."
+in the new name.  If the evil package is available, motions will be
+declared to work well with evil, and definitions where evil-inclusive
+is non-nil will cause the motions to have the inclusive property set
+for evil."
   (let ((name (-repeatable-motion/make-symbol-name base-motion))
         (repeat-fwd (if repeat-motion repeat-motion base-motion)))
     (fset name
@@ -72,9 +75,15 @@ in the new name."
             (setq -repeatable-motion-backward-func repeat-motion-reverse)
             (setq -repeatable-motion-numeric-arg prefix)
             (setq current-prefix-arg (list prefix))
+            (when (-repeatable-motion/evil-p)
+              (if evil-inclusive
+                  (evil-set-command-property 'repeatable-motion/forward :type 'inclusive)
+                (evil-set-command-property 'repeatable-motion/backward :type 'exclusive)))
             (call-interactively base-motion)))
     (when (-repeatable-motion/evil-p)
-      (evil-declare-motion name))))
+      (evil-declare-motion name)
+      (when evil-inclusive
+        (evil-add-command-properties name :type 'inclusive)))))
       
 
 (defun repeatable-motion/define-pair (forward-sym backward-sym)
