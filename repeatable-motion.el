@@ -93,7 +93,7 @@ will be named repeatable-motion/<original-name>"
   (repeatable-motion/define backward-sym forward-sym))
 
 ;; provide some motions
-(require 'common-repeatable-motions)
+(require 'repeatable-motion-common-motions)
 (provide 'repeatable-motion)
 
 ;;; repeatable-motion.el ends here

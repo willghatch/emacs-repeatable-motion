@@ -53,4 +53,4 @@
 (repeatable-motion/-def-single-maybe 'evil-search-word-forward 'evil-search-previous 'evil-search-next)
 (repeatable-motion/-def-single-maybe 'evil-search-word-backward 'evil-search-previous 'evil-search-next)
 
-(provide 'common-repeatable-motions)
+(provide 'repeatable-motion-common-motions)
