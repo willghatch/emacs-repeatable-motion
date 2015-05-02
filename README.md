@@ -1,3 +1,5 @@
+[![MELPA](http://melpa.org/packages/repeatable-motion-badge.svg)](http://melpa.org/#/repeatable-motion)
+
 repeatable-motion.el
 ====================
 
@@ -31,5 +33,5 @@ Personally, I have in my evil-normal-state two keys bound to prefix commands whi
 Install
 -------
 
-Requires emacs version 24.  Clone the repo on your load path and `(require 'repeatable-motion)`
+Requires emacs version 24.  Install through Melpa or clone the repo on your load path and `(require 'repeatable-motion)`.
 
