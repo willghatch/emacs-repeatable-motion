@@ -1,10 +1,10 @@
 ;;; -*- lexical-binding: t -*-
-;;; repeatable-motion.el
+;;; repeatable-motion.el --- Make repeatable versions of motions
 
 ;;; Author: William Hatch <willghatch@gmail.com>
 ;;; Maintainer: William Hatch <willghatch@gmail.com>
 ;;; Version: 0.0
-;;; Homepage: github.com/willghatch/repeatable-motion.el
+;;; Homepage: https://github.com/willghatch/repeatable-motion.el
 ;;; Git-Repository: git://github.com/willghatch/repeatable-motion.git
 ;;; Keywords: motion repeatable
 ;;; Package-Requires: ((emacs "24"))
@@ -31,9 +31,7 @@
 
 (defun repeatable-motion/-evil-p ()
   "Is evil available?"
-  ;; this may not be the best way to go about it, but this is the main
-  ;; function I actually use from evil, so...
-  (symbol-function 'evil-declare-motion))
+  (featurep 'evil))
 
 (defun repeatable-motion/forward (&optional prefix)
   "Repeat the last repeatable motion used, using the original prefix unless a
@@ -43,6 +41,7 @@ new one is given"
                                repeatable-motion/-numeric-arg
                              prefix))
   (call-interactively repeatable-motion/-forward-func))
+
 (defun repeatable-motion/backward (&optional prefix)
   "Repeat the last repeatable motion used, using the original prefix unless a
 new one is given"
