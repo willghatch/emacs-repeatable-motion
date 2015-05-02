@@ -5,6 +5,9 @@
 ;;; Maintainer: William Hatch <willghatch@gmail.com>
 ;;; Version: 0.0
 ;;; Homepage: github.com/willghatch/repeatable-motion.el
+;;; Git-Repository: git://github.com/willghatch/repeatable-motion.git
+;;; Keywords: motion repeatable
+;;; Package-Requires: ((emacs "24"))
 
 ;;; This is free software: you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
