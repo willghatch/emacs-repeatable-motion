@@ -51,9 +51,10 @@ new one is given"
                              prefix))
   (call-interactively repeatable-motion--backward-func))
 
-(when (repeatable-motion--evil-p)
-  (evil-declare-motion 'repeatable-motion-forward)
-  (evil-declare-motion 'repeatable-motion-backward))
+(eval-after-load 'evil
+  '(progn
+     (evil-declare-motion 'repeatable-motion-forward)
+     (evil-declare-motion 'repeatable-motion-backward)))
 
 (defun repeatable-motion--make-symbol-name (orig-sym)
   (intern (concat "repeatable-motion-" (symbol-name orig-sym))))
@@ -83,11 +84,12 @@ have the inclusive property set for evil."
                   (evil-set-command-property 'repeatable-motion-forward :type 'inclusive)
                 (evil-set-command-property 'repeatable-motion-backward :type 'exclusive)))
             (call-interactively base-motion)))
-    (when (repeatable-motion--evil-p)
-      (evil-declare-motion name)
-      (when evil-inclusive
-        (evil-add-command-properties name :type 'inclusive)))))
-      
+    (eval-after-load 'evil
+      '(progn
+         (evil-declare-motion name)
+         (when evil-inclusive
+           (evil-add-command-properties name :type 'inclusive))))))
+
 
 (defun repeatable-motion-define-pair (forward-sym backward-sym)
   "Define a pair of repeatable functions that are opposites of each other.  They
