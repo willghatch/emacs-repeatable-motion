@@ -55,20 +55,21 @@ new one is given"
   (evil-declare-motion 'repeatable-motion-forward)
   (evil-declare-motion 'repeatable-motion-backward))
 
-(defun -repeatable-motion-make-symbol-name (orig-sym)
+(defun repeatable-motion--make-symbol-name (orig-sym)
   (intern (concat "repeatable-motion-" (symbol-name orig-sym))))
 
-(defun repeatable-motion-define (base-motion repeat-motion-reverse &optional repeat-motion evil-inclusive name-prefix)
+(defun repeatable-motion-define (base-motion repeat-motion-reverse &optional repeat-motion evil-inclusive override-name)
   "Defines a new repeatable version of a given function, named
 'repeatable-motion-<original-name>', which will repeat using the given
 repeat and reverse-repeat functions.  If repeat-motion is given, it
 will be used for repeating instead of the base motion given.  If
-name-prefix is given, it will be used instead of 'repeatable-motion-'
-in the new name.  If the evil package is available, motions will be
-declared to work well with evil, and definitions where evil-inclusive
-is non-nil will cause the motions to have the inclusive property set
-for evil."
-  (let ((name (-repeatable-motion-make-symbol-name base-motion))
+override-name is given, it will be used instead of
+'repeatable-motion-<original-name>'.  If the evil package is
+available, motions will be declared to work well with evil, and
+definitions where evil-inclusive is non-nil will cause the motions to
+have the inclusive property set for evil."
+  (let ((name (if override-name override-name
+                (repeatable-motion--make-symbol-name base-motion)))
         (repeat-fwd (if repeat-motion repeat-motion base-motion)))
     (fset name
           (lambda (&optional prefix)
