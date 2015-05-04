@@ -4,11 +4,12 @@
 ;;; Author: William Hatch <willghatch@gmail.com>
 ;;; Maintainer: William Hatch <willghatch@gmail.com>
 ;;; Version: 0.0
-;;; Homepage: https://github.com/willghatch/repeatable-motion.el
-;;; Git-Repository: git://github.com/willghatch/repeatable-motion.git
+;;; Homepage: https://github.com/willghatch/emacs-repeatable-motion
+;;; Git-Repository: git://github.com/willghatch/emacs-repeatable-motion.git
 ;;; Keywords: motion repeatable
 ;;; Package-Requires: ((emacs "24"))
 
+;;; License:
 ;;; This is free software: you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
 ;;; the Free Software Foundation, either version 3 of the License, or
@@ -20,6 +21,11 @@
 ;;; GNU General Public License for more details.
 ;;; <http://www.gnu.org/licenses/>
 
+;;; Commentary:
+;;; This package provides the ability to repeat motions and their arguments
+;;; with a single key, allowing you to keep less used motions on longer
+;;; prefixes.  More documentation is available in the readme, which is
+;;; hosted at https://github.com/willghatch/emacs-repeatable-motion
 
 ;;; Code:
 
