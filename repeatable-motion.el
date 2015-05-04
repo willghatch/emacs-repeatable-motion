@@ -29,6 +29,11 @@
 (setq repeatable-motion--backward-func (lambda () (interactive) nil))
 (setq repeatable-motion--numeric-arg 1)
 
+(defcustom repeatable-motion-define-common-motions-p t
+  "If non-nil, a bunch of common motion commands will have repeatable
+  versions defined when repeatable-motion is loaded, if they are
+  available.")
+
 (defun repeatable-motion--evil-p ()
   "Is evil available?"
   (featurep 'evil))
@@ -98,7 +103,8 @@ will be named repeatable-motion-<original-name>"
   (repeatable-motion-define backward-sym forward-sym))
 
 ;; provide some motions
-(require 'repeatable-motion-common-motions)
+(when repeatable-motion-define-common-motions-p
+  (require 'repeatable-motion-common-motions))
 (provide 'repeatable-motion)
 
 ;;; repeatable-motion.el ends here
