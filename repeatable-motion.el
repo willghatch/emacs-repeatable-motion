@@ -34,10 +34,6 @@
   versions defined when repeatable-motion is loaded, if they are
   available.")
 
-(defun repeatable-motion--evil-p ()
-  "Is evil available?"
-  (featurep 'evil))
-
 (defun repeatable-motion-forward (&optional prefix)
   "Repeat the last repeatable motion used, using the original prefix unless a
 new one is given"
@@ -60,6 +56,16 @@ new one is given"
   '(progn
      (evil-declare-motion 'repeatable-motion-forward)
      (evil-declare-motion 'repeatable-motion-backward)))
+
+(defun repeatable-motion--set-inclusiveness (inclusive-p)
+  (when (featurep 'evil)
+    (if inclusive-p
+        (progn
+          (evil-set-command-property 'repeatable-motion-forward :type 'inclusive)
+          (evil-set-command-property 'repeatable-motion-backward :type 'inclusive))
+      (progn
+        (evil-set-command-property 'repeatable-motion-forward :type 'exclusive)
+        (evil-set-command-property 'repeatable-motion-backward :type 'exclusive)))))
 
 (defun repeatable-motion--make-symbol-name (orig-sym)
   (intern (concat "repeatable-motion-" (symbol-name orig-sym))))
@@ -84,10 +90,7 @@ have the inclusive property set for evil."
             (setq repeatable-motion--backward-func repeat-motion-reverse)
             (setq repeatable-motion--numeric-arg prefix)
             (setq current-prefix-arg (list prefix))
-            (when (repeatable-motion--evil-p)
-              (if evil-inclusive
-                  (evil-set-command-property 'repeatable-motion-forward :type 'inclusive)
-                (evil-set-command-property 'repeatable-motion-backward :type 'exclusive)))
+            (repeatable-motion--set-inclusiveness evil-inclusive)
             (call-interactively base-motion)))
     (eval-after-load 'evil
       '(progn
