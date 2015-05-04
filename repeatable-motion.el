@@ -39,6 +39,11 @@
   "If non-nil, a bunch of common motion commands will have repeatable
   versions defined when repeatable-motion is loaded, if they are
   available.")
+(defcustom repeatable-motion-only-repeat-with-count nil
+  "If non-nil, motions will only be set to repeat if they were provided with
+a prefix other than 1.  This makes it behave like repmo.vim.  Why would you
+want it to only be when you give a count?  I don't know, but apparently
+people use repmo.vim...")
 
 (defun repeatable-motion-forward (&optional prefix)
   "Repeat the last repeatable motion used, using the original prefix unless a
@@ -92,9 +97,11 @@ have the inclusive property set for evil."
     (fset name
           (lambda (&optional prefix)
             (interactive "p")
-            (setq repeatable-motion--forward-func repeat-fwd)
-            (setq repeatable-motion--backward-func repeat-motion-reverse)
-            (setq repeatable-motion--numeric-arg prefix)
+            (unless (and repeatable-motion-only-repeat-with-count
+                         (equal prefix 1))
+              (setq repeatable-motion--forward-func repeat-fwd)
+              (setq repeatable-motion--backward-func repeat-motion-reverse)
+              (setq repeatable-motion--numeric-arg prefix))
             (setq current-prefix-arg (list prefix))
             (repeatable-motion--set-inclusiveness evil-inclusive)
             (call-interactively base-motion)))
