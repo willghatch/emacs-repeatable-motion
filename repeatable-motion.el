@@ -31,9 +31,9 @@
 
 ;; should these be buffer local?  Evil mode doesn't make command repetition buffer
 ;; local, so for now these won't be either.
-(setq repeatable-motion--forward-func (lambda () (interactive) nil))
-(setq repeatable-motion--backward-func (lambda () (interactive) nil))
-(setq repeatable-motion--numeric-arg 1)
+(defvar repeatable-motion--forward-func (lambda () (interactive) nil))
+(defvar repeatable-motion--backward-func (lambda () (interactive) nil))
+(defvar repeatable-motion--numeric-arg 1)
 
 (defcustom repeatable-motion-define-common-motions-p t
   "If non-nil, a bunch of common motion commands will have repeatable
