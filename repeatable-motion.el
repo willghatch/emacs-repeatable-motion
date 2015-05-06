@@ -35,15 +35,20 @@
 (defvar repeatable-motion--backward-func (lambda () (interactive) nil))
 (defvar repeatable-motion--numeric-arg 1)
 
+(defgroup repeatable-motion nil
+  "Group for the repeatable-motion package")
+
 (defcustom repeatable-motion-define-common-motions-p t
   "If non-nil, a bunch of common motion commands will have repeatable
   versions defined when repeatable-motion is loaded, if they are
-  available.")
+  available."
+  :group 'repeatable-motion)
 (defcustom repeatable-motion-only-repeat-with-count nil
   "If non-nil, motions will only be set to repeat if they were provided with
 a prefix other than 1.  This makes it behave like repmo.vim.  Why would you
 want it to only be when you give a count?  I don't know, but apparently
-people use repmo.vim...")
+people use repmo.vim..."
+  :group 'repeatable-motion)
 
 (defun repeatable-motion-forward (&optional prefix)
   "Repeat the last repeatable motion used, using the original prefix unless a
