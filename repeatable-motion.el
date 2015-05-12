@@ -111,10 +111,10 @@ have the inclusive property set for evil."
             (repeatable-motion--set-inclusiveness evil-inclusive)
             (call-interactively base-motion)))
     (eval-after-load 'evil
-      '(progn
-         (evil-declare-motion name)
-         (when evil-inclusive
-           (evil-add-command-properties name :type 'inclusive))))))
+      `(progn
+         (evil-declare-motion (quote ,name))
+         (when ,evil-inclusive
+           (evil-add-command-properties (quote ,name) :type 'inclusive))))))
 
 
 (defun repeatable-motion-define-pair (forward-sym backward-sym)
