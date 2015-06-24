@@ -57,4 +57,25 @@
      (repeatable-motion-define 'evil-search-word-backward 'evil-search-previous 'evil-search-next)
      ))
 
+(eval-after-load 'smartparens
+  '(progn
+     (repeatable-motion-define-pair 'sp-forward-sexp 'sp-backward-sexp)
+     (repeatable-motion-define-pair 'sp-down-sexp 'sp-backward-down-sexp)
+     (repeatable-motion-define-pair 'sp-up-sexp 'sp-backward-up-sexp)
+     (repeatable-motion-define-pair 'sp-next-sexp 'sp-previous-sexp)
+     (repeatable-motion-define-pair 'sp-beginning-of-sexp 'sp-end-of-sexp)
+     (repeatable-motion-define-pair 'sp-beginning-of-next-sexp 'sp-beginning-of-previous-sexp)
+     (repeatable-motion-define-pair 'sp-end-of-next-sexp 'sp-end-of-previous-sexp)
+     ))
+
+(eval-after-load 'on-parens
+  '(progn
+     (repeatable-motion-define-pair 'on-parens-forward-sexp 'on-parens-backward-sexp)
+     (repeatable-motion-define-pair 'on-parens-forward-sexp-end 'on-parens-backward-sexp-end)
+     (repeatable-motion-define-pair 'on-parens-up-sexp 'on-parens-down-sexp)
+     (repeatable-motion-define 'on-parens-up-sexp-end 'on-parens-down-sexp 'on-parens-up-sexp-end)
+     (repeatable-motion-define 'on-parens-down-sexp-end 'on-parens-up-sexp 'on-parens-down-sexp-end)
+     (repeatable-motion-define-pair 'on-parens-forward-sexp-in-supersexp 'on-parens-backward-sexp-in-supersexp)
+     ))
+
 (provide 'repeatable-motion-common-motions)
