@@ -50,6 +50,8 @@ a prefix other than 1.  This makes it behave like repmo.vim.  Why would you
 want it to only be when you give a count?  I don't know, but apparently
 people use repmo.vim..."
   :group 'repeatable-motion)
+(defcustom repeatable-motion-definition-prefix "repeatable-motion-"
+  "The prefix that defined motions will have.  Defaults to repeatable-motion-")
 
 (defun repeatable-motion-forward (&optional prefix)
   "Repeat the last repeatable motion used, using the original prefix unless a
@@ -85,7 +87,7 @@ new one is given"
         (evil-set-command-property 'repeatable-motion-backward :type 'exclusive)))))
 
 (defun repeatable-motion--make-symbol-name (orig-sym)
-  (intern (concat "repeatable-motion-" (symbol-name orig-sym))))
+  (intern (concat repeatable-motion-definition-prefix (symbol-name orig-sym))))
 
 (cl-defun repeatable-motion-define
     (base-motion repeat-motion-reverse

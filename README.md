@@ -38,5 +38,6 @@ Requires emacs version 24.  Install through Melpa or clone the repo on your load
 Configure
 ---------
 
-- Customize `repeatable-motion-define-common-motions-p` to `nil` before loading if you don't want motions to be defined automatically
+- Customize `repeatable-motion-define-common-motions-p` to `nil` before loading if you don't want motions to be defined automatically.
 - Customize `repeatable-motion-only-repeat-with-count` to `t` if you want repeatable-motion to be like repmo.vim and only set the repeat key if a count greater than 1 is given.
+- Customize `repeatable-motion-definition-prefix` to whatever prefix you want for the repeatable versions.  Defaults to "repeatable-motion-".
