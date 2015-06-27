@@ -49,13 +49,13 @@
      (repeatable-motion-define-pair 'evil-forward-arg 'evil-backward-arg)
 
      (repeatable-motion-define 'evil-find-char 'evil-repeat-find-char-reverse
-                               :repeat 'evil-repeat-find-char )
+                               :repeat 'evil-repeat-find-char :inclusive t)
      (repeatable-motion-define 'evil-find-char-backward 'evil-repeat-find-char-reverse
-                               :repeat 'evil-repeat-find-char )
+                               :repeat 'evil-repeat-find-char :inclusive t)
      (repeatable-motion-define 'evil-find-char-to 'evil-repeat-find-char-reverse
-                               :repeat 'evil-repeat-find-char )
+                               :repeat 'evil-repeat-find-char :inclusive t)
      (repeatable-motion-define 'evil-find-char-to-backward 'evil-repeat-find-char-reverse
-                               :repeat 'evil-repeat-find-char )
+                               :repeat 'evil-repeat-find-char :inclusive t)
      (repeatable-motion-define 'evil-search-forward 'evil-search-previous
                                :repeat 'evil-search-next)
      (repeatable-motion-define 'evil-search-backward 'evil-search-previous
