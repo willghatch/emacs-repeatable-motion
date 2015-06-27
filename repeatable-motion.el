@@ -31,6 +31,7 @@
 
 ;; should these be buffer local?  Evil mode doesn't make command repetition buffer
 ;; local, so for now these won't be either.
+(require 'cl-lib)
 (defvar repeatable-motion--forward-func (lambda () (interactive) nil))
 (defvar repeatable-motion--backward-func (lambda () (interactive) nil))
 (defvar repeatable-motion--numeric-arg 1)
@@ -86,19 +87,18 @@ new one is given"
 (defun repeatable-motion--make-symbol-name (orig-sym)
   (intern (concat "repeatable-motion-" (symbol-name orig-sym))))
 
-(defun repeatable-motion-define (base-motion repeat-motion-reverse &optional repeat-motion evil-inclusive override-name)
+(cl-defun repeatable-motion-define
+    (base-motion repeat-motion-reverse
+                 &key repeat inclusive)
   "Defines a new repeatable version of a given function, named
 'repeatable-motion-<original-name>', which will repeat using the given
-repeat and reverse-repeat functions.  If repeat-motion is given, it
-will be used for repeating instead of the base motion given.  If
-override-name is given, it will be used instead of
-'repeatable-motion-<original-name>'.  If the evil package is
-available, motions will be declared to work well with evil, and
-definitions where evil-inclusive is non-nil will cause the motions to
-have the inclusive property set for evil."
-  (let ((name (if override-name override-name
-                (repeatable-motion--make-symbol-name base-motion)))
-        (repeat-fwd (if repeat-motion repeat-motion base-motion)))
+repeat and reverse-repeat functions.  If :repeat is given, it will be
+used for repeating instead of the base motion given.  If the evil
+package is available, motions will be declared to work well with evil,
+and definitions where :inclusive is non-nil will cause the motions
+to have the inclusive property set for evil."
+  (let ((name (repeatable-motion--make-symbol-name base-motion))
+        (repeat-fwd (if repeat repeat base-motion)))
     (fset name
           (lambda (&optional prefix)
             (interactive "p")
@@ -108,20 +108,24 @@ have the inclusive property set for evil."
               (setq repeatable-motion--backward-func repeat-motion-reverse)
               (setq repeatable-motion--numeric-arg prefix))
             (setq current-prefix-arg (list prefix))
-            (repeatable-motion--set-inclusiveness evil-inclusive)
+            (repeatable-motion--set-inclusiveness inclusive)
             (call-interactively base-motion)))
     (eval-after-load 'evil
       `(progn
          (evil-declare-motion (quote ,name))
-         (when ,evil-inclusive
+         (when ,inclusive
            (evil-add-command-properties (quote ,name) :type 'inclusive))))))
 
 
-(defun repeatable-motion-define-pair (forward-sym backward-sym)
-  "Define a pair of repeatable functions that are opposites of each other.  They
-will be named repeatable-motion-<original-name>"
-  (repeatable-motion-define forward-sym backward-sym)
-  (repeatable-motion-define backward-sym forward-sym))
+(cl-defun repeatable-motion-define-pair
+    (forward-sym backward-sym &key inclusive inclusive1 inclusive2)
+  "Define a pair of repeatable functions that are opposites of each
+other.  They will be named repeatable-motion-<original-name>.  Keyword
+arguments :both-inclusive, :inclusive1, and :inclusive2 may be
+provided, and when they are non-nil, the motions are flagged as inclusive
+for evil-mode."
+  (repeatable-motion-define forward-sym backward-sym :inclusive (or inclusive inclusive1))
+  (repeatable-motion-define backward-sym forward-sym :inclusive (or inclusive inclusive2)))
 
 ;; provide some motions
 (when repeatable-motion-define-common-motions-p

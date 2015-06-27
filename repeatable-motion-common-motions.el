@@ -33,7 +33,8 @@
      (repeatable-motion-define-pair 'evil-next-visual-line 'evil-previous-visual-line)
      (repeatable-motion-define-pair 'evil-forward-word-begin 'evil-backward-word-begin)
      (repeatable-motion-define-pair 'evil-forward-WORD-begin 'evil-backward-WORD-begin)
-     (repeatable-motion-define-pair 'evil-forward-word-end 'evil-backward-word-end)
+     (repeatable-motion-define-pair 'evil-forward-word-end 'evil-backward-word-end
+                                    :inclusive1 t)
      (repeatable-motion-define-pair 'evil-forward-WORD-end 'evil-backward-WORD-end)
      (repeatable-motion-define-pair 'evil-forward-little-word-begin 'evil-backward-little-word-begin)
      (repeatable-motion-define-pair 'evil-forward-little-word-end 'evil-backward-little-word-end)
@@ -47,14 +48,22 @@
      (repeatable-motion-define-pair 'evil-jump-forward 'evil-jump-backward)
      (repeatable-motion-define-pair 'evil-forward-arg 'evil-backward-arg)
 
-     (repeatable-motion-define 'evil-find-char 'evil-repeat-find-char-reverse 'evil-repeat-find-char t)
-     (repeatable-motion-define 'evil-find-char-backward 'evil-repeat-find-char-reverse 'evil-repeat-find-char t)
-     (repeatable-motion-define 'evil-find-char-to 'evil-repeat-find-char-reverse 'evil-repeat-find-char t)
-     (repeatable-motion-define 'evil-find-char-to-backward 'evil-repeat-find-char-reverse 'evil-repeat-find-char t)
-     (repeatable-motion-define 'evil-search-forward 'evil-search-previous 'evil-search-next)
-     (repeatable-motion-define 'evil-search-backward 'evil-search-previous 'evil-search-next)
-     (repeatable-motion-define 'evil-search-word-forward 'evil-search-previous 'evil-search-next)
-     (repeatable-motion-define 'evil-search-word-backward 'evil-search-previous 'evil-search-next)
+     (repeatable-motion-define 'evil-find-char 'evil-repeat-find-char-reverse
+                               :repeat 'evil-repeat-find-char )
+     (repeatable-motion-define 'evil-find-char-backward 'evil-repeat-find-char-reverse
+                               :repeat 'evil-repeat-find-char )
+     (repeatable-motion-define 'evil-find-char-to 'evil-repeat-find-char-reverse
+                               :repeat 'evil-repeat-find-char )
+     (repeatable-motion-define 'evil-find-char-to-backward 'evil-repeat-find-char-reverse
+                               :repeat 'evil-repeat-find-char )
+     (repeatable-motion-define 'evil-search-forward 'evil-search-previous
+                               :repeat 'evil-search-next)
+     (repeatable-motion-define 'evil-search-backward 'evil-search-previous
+                               :repeat 'evil-search-next)
+     (repeatable-motion-define 'evil-search-word-forward 'evil-search-previous
+                               :repeat 'evil-search-next)
+     (repeatable-motion-define 'evil-search-word-backward 'evil-search-previous
+                               :repeat 'evil-search-next)
      ))
 
 (eval-after-load 'smartparens
@@ -71,10 +80,15 @@
 (eval-after-load 'on-parens
   '(progn
      (repeatable-motion-define-pair 'on-parens-forward-sexp 'on-parens-backward-sexp)
-     (repeatable-motion-define-pair 'on-parens-forward-sexp-end 'on-parens-backward-sexp-end)
+     ;; TODO - even though it's not inclusive, the backwards one is killing the character
+     ;; it lands on.  Same with backwards end of anything.  That should not be.
+     (repeatable-motion-define-pair 'on-parens-forward-sexp-end 'on-parens-backward-sexp-end
+                                    :inclusive1 t)
+     ;; TODO - d<up-sexp> kills the opening delimiter, whereas d<up-sexp-end> doesn't.
+     ;; I want the former to act like the latter.
      (repeatable-motion-define-pair 'on-parens-up-sexp 'on-parens-down-sexp)
-     (repeatable-motion-define 'on-parens-up-sexp-end 'on-parens-down-sexp 'on-parens-up-sexp-end)
-     (repeatable-motion-define 'on-parens-down-sexp-end 'on-parens-up-sexp 'on-parens-down-sexp-end)
+     (repeatable-motion-define 'on-parens-up-sexp-end 'on-parens-down-sexp)
+     (repeatable-motion-define 'on-parens-down-sexp-end 'on-parens-up-sexp :inclusive t)
      (repeatable-motion-define-pair 'on-parens-forward-sexp-in-supersexp 'on-parens-backward-sexp-in-supersexp)
      ))
 

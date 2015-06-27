@@ -10,10 +10,10 @@ The rationale for this package is that it can be nice to have a somewhat obscure
     ;; The following will define the function "repeatable-motion-forward-foo",
     ;; which will be the same as forward-foo, but will set it to be repeated.
     (repeatable-motion-define 'forward-foo 'backward-foo)
-    ;; optional arguments:
-    ;; repeat-version (in case you want a different
+    ;; keyword arguments:
+    ;; :repeat (in case you want a different
     ;;     function to be repeated, eg. repeat-isearch)
-    ;; evil-inclusive (whether the motion should be treated as inclusive by evil-mode)
+    ;; :inclusive (whether the motion should be treated as inclusive by evil-mode)
 
     ;; This will define two functions: repeatable-motion-fwd-foo and repeatable-motion-bkwd-foo.
     ;; Useful for simple motions that have opposites.
