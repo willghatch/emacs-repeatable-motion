@@ -51,7 +51,16 @@ want it to only be when you give a count?  I don't know, but apparently
 people use repmo.vim..."
   :group 'repeatable-motion)
 (defcustom repeatable-motion-definition-prefix "repeatable-motion-"
-  "The prefix that defined motions will have.  Defaults to repeatable-motion-")
+  "The prefix that defined motions will have.  Defaults to repeatable-motion-.
+If nil, no normal repeatable commands will be defined."
+  :group 'repeatable-motion)
+(defcustom repeatable-motion-count-needed-prefix nil
+  "The prefix that defined motions will have if you want them to need
+a non-1 prefix argument.  If nil (the default), these functions will
+not be defined.  Commands with these names act like repmo.vim, in that
+they are only set to repeat if given with a prefix.  Good for up/down
+line commands."
+  :group 'repeatable-motion)
 
 (defun repeatable-motion-forward (&optional prefix)
   "Repeat the last repeatable motion used, using the original prefix unless a
@@ -86,8 +95,12 @@ new one is given"
         (evil-set-command-property 'repeatable-motion-forward :type 'exclusive)
         (evil-set-command-property 'repeatable-motion-backward :type 'exclusive)))))
 
-(defun repeatable-motion--make-symbol-name (orig-sym)
-  (intern (concat repeatable-motion-definition-prefix (symbol-name orig-sym))))
+(defun repeatable-motion--make-symbol-name (orig-sym only-with-count-p)
+  (let ((prefix (if only-with-count-p
+                    repeatable-motion-count-needed-prefix
+                  repeatable-motion-definition-prefix)))
+    (if prefix (intern (concat prefix (symbol-name orig-sym)))
+      nil)))
 
 (cl-defun repeatable-motion-define
     (base-motion repeat-motion-reverse
@@ -98,25 +111,36 @@ repeat and reverse-repeat functions.  If :repeat is given, it will be
 used for repeating instead of the base motion given.  If the evil
 package is available, motions will be declared to work well with evil,
 and definitions where :inclusive is non-nil will cause the motions
-to have the inclusive property set for evil."
-  (let ((name (repeatable-motion--make-symbol-name base-motion))
+to have the inclusive property set for evil.  Defines any versions
+of repeatable motions for which prefix names exist (IE versions that
+need prefix arguments and versions that don't)."
+  (repeatable-motion--define base-motion repeat-motion-reverse
+                             :repeat repeat :inclusive inclusive :count-only nil)
+  (repeatable-motion--define base-motion repeat-motion-reverse
+                             :repeat repeat :inclusive inclusive :count-only t))
+
+(cl-defun repeatable-motion--define
+    (base-motion repeat-motion-reverse
+                 &key repeat inclusive count-only)
+  (let ((name (repeatable-motion--make-symbol-name base-motion count-only))
         (repeat-fwd (if repeat repeat base-motion)))
-    (fset name
-          (lambda (&optional prefix)
-            (interactive "p")
-            (unless (and repeatable-motion-only-repeat-with-count
-                         (equal prefix 1))
-              (setq repeatable-motion--forward-func repeat-fwd)
-              (setq repeatable-motion--backward-func repeat-motion-reverse)
-              (setq repeatable-motion--numeric-arg prefix))
-            (setq current-prefix-arg (list prefix))
-            (repeatable-motion--set-inclusiveness inclusive)
-            (call-interactively base-motion)))
-    (eval-after-load 'evil
-      `(progn
-         (evil-declare-motion (quote ,name))
-         (when ,inclusive
-           (evil-add-command-properties (quote ,name) :type 'inclusive))))))
+    (when name
+      (fset name
+            (lambda (&optional prefix)
+              (interactive "p")
+              (unless (and count-only
+                           (equal prefix 1))
+                (setq repeatable-motion--forward-func repeat-fwd)
+                (setq repeatable-motion--backward-func repeat-motion-reverse)
+                (setq repeatable-motion--numeric-arg prefix))
+              (setq current-prefix-arg (list prefix))
+              (repeatable-motion--set-inclusiveness inclusive)
+              (call-interactively base-motion)))
+      (eval-after-load 'evil
+        `(progn
+           (evil-declare-motion (quote ,name))
+           (when ,inclusive
+             (evil-add-command-properties (quote ,name) :type 'inclusive)))))))
 
 
 (cl-defun repeatable-motion-define-pair
