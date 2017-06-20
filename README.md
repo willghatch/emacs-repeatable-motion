@@ -41,3 +41,5 @@ Configure
 - Customize `repeatable-motion-define-common-motions-p` to `nil` before loading if you don't want motions to be defined automatically.
 - Customize `repeatable-motion-definition-prefix` to whatever prefix you want for the repeatable versions.  Defaults to "repeatable-motion-".  The default conforms to emacs packaging standards, but frankly I recommend something short like "rmo/".
 - Customize `repeatable-motion-count-needed-prefix` to whatever prefix you want for versions that are repeatable only when they receive a non-1 prefix argument.  These motions will be like those provided with eg. repmo.vim.  Defaults to `nil` (meaning they won't be defined at all).  A good one may be "rmo-c/".
+- Customize `repeatable-motion-training-wheels-p` to `t` if you want training-wheels mode -- repeated calls to the motion will fail, and tell you to use the repeat key instead.
+- Customize `repeatable-motion-training-wheels-timeout` a number of seconds for the training-wheels restriction to wear off.

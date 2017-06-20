@@ -32,6 +32,8 @@
 ;; should these be buffer local?  Evil mode doesn't make command repetition buffer
 ;; local, so for now these won't be either.
 (require 'cl-lib)
+(defvar repeatable-motion--last-motion 'none)
+(defvar repeatable-motion--last-motion-time 0)
 (defvar repeatable-motion--forward-func (lambda () (interactive) nil))
 (defvar repeatable-motion--backward-func (lambda () (interactive) nil))
 (defvar repeatable-motion--numeric-arg 1)
@@ -49,6 +51,15 @@
 a prefix other than 1.  This makes it behave like repmo.vim.  Why would you
 want it to only be when you give a count?  I don't know, but apparently
 people use repmo.vim..."
+  :group 'repeatable-motion)
+(defcustom repeatable-motion-training-wheels-p nil
+  "If non-nil, make repeatable motions give you an error message instead of
+moving if they are called more than once in a row within
+`repeatable-motion-training-wheels-timeout`, forcing the user to use the
+repeat key instead of spamming the motion key."
+  :group 'repeatable-motion)
+(defcustom repeatable-motion-training-wheels-timeout 5
+  "Timeout (in seconds) for `repeatable-motion-training-wheels-p`"
   :group 'repeatable-motion)
 (defcustom repeatable-motion-definition-prefix "repeatable-motion-"
   "The prefix that defined motions will have.  Defaults to repeatable-motion-.
@@ -128,14 +139,22 @@ need prefix arguments and versions that don't)."
       (fset name
             (lambda (&optional prefix)
               (interactive "p")
-              (unless (and count-only
-                           (equal prefix 1))
-                (setq repeatable-motion--forward-func repeat-fwd)
-                (setq repeatable-motion--backward-func repeat-motion-reverse)
-                (setq repeatable-motion--numeric-arg prefix))
-              (setq current-prefix-arg (list prefix))
-              (repeatable-motion--set-inclusiveness inclusive)
-              (call-interactively base-motion)))
+              (if (and repeatable-motion-training-wheels-p
+                       (equal repeatable-motion--last-motion name)
+                       (<= (- (cadr (current-time)) repeatable-motion--last-motion-time)
+                           repeatable-motion-training-wheels-timeout))
+                  (message "Use repeat-motion key.")
+                (progn
+                  (unless (and count-only
+                               (equal prefix 1))
+                    (setq repeatable-motion--last-motion-time (cadr (current-time)))
+                    (setq repeatable-motion--last-motion name)
+                    (setq repeatable-motion--forward-func repeat-fwd)
+                    (setq repeatable-motion--backward-func repeat-motion-reverse)
+                    (setq repeatable-motion--numeric-arg prefix))
+                  (setq current-prefix-arg (list prefix))
+                  (repeatable-motion--set-inclusiveness inclusive)
+                  (call-interactively base-motion)))))
       (eval-after-load 'evil
         `(progn
            (evil-declare-motion (quote ,name))
