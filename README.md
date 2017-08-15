@@ -43,3 +43,53 @@ Configure
 - Customize `repeatable-motion-count-needed-prefix` to whatever prefix you want for versions that are repeatable only when they receive a non-1 prefix argument.  These motions will be like those provided with eg. repmo.vim.  Defaults to `nil` (meaning they won't be defined at all).  A good one may be "rmo-c/".
 - Customize `repeatable-motion-training-wheels-p` to `t` if you want training-wheels mode -- repeated calls to the motion will fail, and tell you to use the repeat key instead.
 - Customize `repeatable-motion-training-wheels-timeout` a number of seconds for the training-wheels restriction to wear off.
+
+Examples
+--------
+
+You can put this in your emacs config file:
+
+```
+;; set or customize these before requiring the package for them to take effect
+;; for automatically defined movements.
+(setq repeatable-motion-definition-prefix "rmo/")
+(setq repeatable-motion-count-needed-prefix "rmo-c/")
+(require 'repeatable-motion)
+
+;; when we require evil, some common motions will be defined.
+;; Since we set the prefix to `rmo/`, we will have functions defined
+;; like `rmo/evil-next-line`, and `rmo/evil-forward-WORD-end`.
+(require 'evil)
+(define-key evil-motion-state-map ";" 'repeatable-motion-forward)
+(define-key evil-motion-state-map "," 'repeatable-motion-backward)
+;; Let's make j/k be repeatable, but only when we use a prefix (eg `9j`)
+(define-key evil-motion-state-map "j" 'rmo-c/evil-next-line)
+(define-key evil-motion-state-map "k" 'rmo-c/evil-previous-line)
+;; Let's add some more common movements, but make them repeatable always
+(define-key evil-motion-state-map "w" 'rmo/evil-forward-word-begin)
+(define-key evil-motion-state-map "b" 'rmo/evil-backward-word-begin)
+
+;; Let's define a new repeatable motion and bind it
+(repeatable-motion-define-pair 'org-forward-element 'org-backward-element)
+;; Now rmo/org-forward-element and rmo/org-backward-element are both defined,
+;; as well as rmo-c/org-forward-element and rmo-c/org-backward-element.
+
+;; Let's use `h` and `l` as prefixes for motions -- `h` for backward, `l` for forward.
+(define-key evil-motion-state-map "l" nil)
+(define-key evil-motion-state-map "h" nil)
+(define-key evil-motion-state-map "lc" 'rmo/evil-forward-char)
+(define-key evil-motion-state-map "hc" 'rmo/evil-backward-char)
+(define-key evil-motion-state-map "le" 'rmo/org-forward-element)
+(define-key evil-motion-state-map "he" 'rmo/org-backward-element)
+(define-key evil-motion-state-map "lp" 'rmo/evil-forward-paragraph)
+(define-key evil-motion-state-map "hp" 'rmo/evil-backward-paragraph)
+;; etc
+
+;; Now we can type `le` to move forward one org element, then type `;` to move another.
+;; If we then type `j`, `;` still moves forward one element, since we used `rmo-c/` for j/k.
+;; If we type `5j`, ';' will repeat `5j` instead of org-forward-element.
+```
+
+To see more examples of defining motions, as well as to see which ones are defined by default, see `repeatable-motion-common-motions.el`.
+
+
